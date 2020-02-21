@@ -1,6 +1,6 @@
 package com.hy.ysq.render;
 
-import android.content.Context;
+import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -12,9 +12,9 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class HelloTriangleRenderer implements GLSurfaceView.Renderer {
+public class SquareRender implements GLSurfaceView.Renderer {
 
-    public HelloTriangleRenderer()
+    public SquareRender()
     {
         mVertices = ByteBuffer.allocateDirect(mVerticesData.length * 4)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -90,6 +90,8 @@ public class HelloTriangleRenderer implements GLSurfaceView.Renderer {
         mProgramObject = programObject;
 
         GLES30.glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
+
+        _positionHandle = GLES30.glGetAttribLocation(programObject, "vPosition");
     }
 
     @Override
@@ -110,10 +112,10 @@ public class HelloTriangleRenderer implements GLSurfaceView.Renderer {
         GLES30.glUseProgram ( mProgramObject );
 
         // Load the vertex data
-        GLES30.glVertexAttribPointer ( 0, 6, GLES30.GL_FLOAT, false, 0, mVertices );
+        GLES30.glVertexAttribPointer ( _positionHandle, 3, GLES30.GL_FLOAT, false, 0, mVertices );
         GLES30.glEnableVertexAttribArray ( 0 );
 
-        GLES30.glDrawArrays ( GLES30.GL_TRIANGLES, 0, 3 );
+        GLES30.glDrawArrays ( GLES30.GL_TRIANGLES, 0, 6 );
     }
 
     // Member variables
@@ -121,13 +123,18 @@ public class HelloTriangleRenderer implements GLSurfaceView.Renderer {
     private int mWidth;
     private int mHeight;
     private FloatBuffer mVertices;
-    private static String TAG = "HelloTriangleRenderer";
+    private static String TAG = "SquareRender";
+
+    private int _positionHandle = -1;
 
     private final float[] mVerticesData =
-            { 0.0f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f };
+            { -0.5f, 0.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f,
+              -0.5f, 0.0f, 0.0f, 0.5f,  -0.5f, 0.0f, 0.5f, 0.0f, 0.0f};
+
+    static float[] squareVertices = { -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, };
 
     private final String vShaderStr =
-                    "#version 300 es 			     \n"
+            "#version 300 es 			     \n"
                     +   "in vec4 vPosition;          \n"
                     + "void main()                   \n"
                     + "{                             \n"
@@ -135,7 +142,7 @@ public class HelloTriangleRenderer implements GLSurfaceView.Renderer {
                     + "}                             \n";
 
     private  final String fShaderStr =
-                    "#version 300 es		 			          	\n"
+            "#version 300 es		 			          	\n"
                     + "precision mediump float;					  	\n"
                     + "out vec4 fragColor;	 			 		  	\n"
                     + "void main()                                  \n"

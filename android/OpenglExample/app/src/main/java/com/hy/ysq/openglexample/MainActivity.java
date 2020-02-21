@@ -8,6 +8,7 @@ import android.view.Surface;
 import android.widget.LinearLayout;
 
 import com.hy.ysq.surface.HelloTriangleSurface;
+import com.hy.ysq.surface.SquareSurface;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        view = new HelloTriangleSurface(this);
+        view = new SquareSurface(this);
 //        setContentView(view);
         LinearLayout layout = (LinearLayout)findViewById(R.id.line1);
         layout.addView(view);
